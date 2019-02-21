@@ -19,3 +19,8 @@ This web UI is tested on
 * Safari on Mac
 * Safari on iPhone
 * Chrome on Mac
+
+If you'd like to run the page at your local machine, use Chrome with `--args -allow-file-access-from-files` option. For example on Mac,
+```
+$ open -a Google\ Chrome --args -allow-file-access-from-files
+```
