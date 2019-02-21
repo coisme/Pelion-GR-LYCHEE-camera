@@ -92,6 +92,7 @@
             .then(devices => {
                 console.log(devices.data.length + " connected device(s) found.");
                 document.getElementById("device-list-message-holder").innerText = devices.data.length + " connected device(s) found.";
+                document.getElementById("device-list").innerHTML = "";
                 for(let i=0; i < devices.data.length; i++) {
                     let id = devices.data[i].id;
                     document.getElementById("device-list").innerHTML += 
