@@ -176,8 +176,8 @@
             const payload = "Don't care.";
             connect.setResourceValue(deviceId, cameraShutterRes, payload)
             .then(response => {
-                document.getElementById("device-message-holder").innerText = "Camera triggered.";
-                console.log("Camera triggered.");
+                document.getElementById("device-message-holder").innerText = "Camera triggered...";
+                console.log("Camera triggered...");
             })
             .catch(error => {
                 console.log(error);
