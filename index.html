@@ -18,7 +18,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Mbed Cloud SDK</title>
+    <title>Pelion & GR-LYCHEE Camera Monitoring</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
@@ -33,12 +33,12 @@
     <div id="apikey-holder">
         API Key: 
         <input id="api_key" type="text" value="" />
-        <button type="button" onClick="connectPelion()">Connect</button>
+        <button type="button" onClick="getDeviceList()">Connect</button>
     </div>
 
-    <h3 id="header"></h3> <!-- Device Id -->
-
-    <div id="device-list"></div>
+    <div id="device-list">
+        <!-- Device list here. -->
+    </div>
 
     <div>
         <div id="device-list-message-holder">
@@ -60,22 +60,17 @@
         <!-- Received Photo Here. -->
     </div>
 
-
+    <!-- Javascript -->
     <script>
-        const cameraCaptureRes = "/3200/0/4014";
-        const cameraShutterRes = "/3201/0/5853";
+        const cameraCaptureRes = "/3200/0/4014";    // Camera capture
+        const cameraShutterRes = "/3201/0/5853";    // Camera shutter, which triggers taking a photo
 
         let connect;          // ConnectAPI object
         
-        function setDeviceListMessage(message) {
-            document.getElementById("device-list-message-holder").innerText = message;            
-        }
-
-        function setDeviceMessage(message) {
-            ("device-message-holder").innerText = message;
-        }
-
-        function connectPelion(){
+        /*
+         * Get the device list associated with the provided API key.
+         */
+        function getDeviceList(){
             let key = document.getElementById("api_key").value;
             if(key == "") {
                 window.alert("Set your API key.");
@@ -88,12 +83,15 @@
             listDevices();
         }
 
+        /* 
+         * Create a list of devices associated with the account.
+         */
         function listDevices() {
-            setDeviceListMessage("Listing connected devices...");
+            document.getElementById("device-list-message-holder").innerText = "Listing connected devices...";
             connect.listConnectedDevices()
             .then(devices => {
                 console.log(devices.data.length + " connected device(s) found.");
-                setDeviceListMessage(devices.data.length + " connected device(s) found.");
+                document.getElementById("device-list-message-holder").innerText = devices.data.length + " connected device(s) found.";
                 for(let i=0; i < devices.data.length; i++) {
                     let id = devices.data[i].id;
                     document.getElementById("device-list").innerHTML += 
@@ -106,9 +104,13 @@
             })
             .catch(error => {
                 console.log(error);
+                document.getElementById("device-list-message-holder").innerHTML = '<font color="#ff0000">' + error + "</font>";
             });
         }
 
+        /*
+         * Returns the device id which is selected by the radio button.
+         */
         function getSelectedDeviceId() {
             let ret;
             let radios = document.getElementsByName("selected-device");
@@ -120,6 +122,9 @@
             return ret;
         }
 
+        /*
+         * Subscribes the camera resource on the selected device.
+         */
         function subscribeCamera() {
             // Clear existing subscription if exist.
             connect.deleteSubscriptions()
@@ -133,17 +138,23 @@
                     console.log(asyncId);
                     // Enable the photo capture button
                     document.getElementById("button-trigger-camera").disabled = false;
-                    setDeviceListMessage("Device enabled.");
+                    document.getElementById("device-list-message-holder").innerText = "Device enabled.";
+                    document.getElementById("device-message-holder").innerText = "To get a picture, click the CAPTURE button.";
                 })
                 .catch(error => {
                     console.log(error);
+                    document.getElementById("device-list-message-holder").innerHTML = '<font color="#ff0000">' + error + "</font>";
                 });
             })
             .catch(error => {
                 console.log(error);
+                document.getElementById("device-list-message-holder").innerHTML = '<font color="#ff0000">' + error + "</font>";
             });
         }
 
+        /*
+         * Get a captured photo via Pelion. 
+         */
         function getCapure() {
             let deviceId = getSelectedDeviceId();
             connect.getResourceValue(devieId, cameraCaptureRes)
@@ -152,27 +163,35 @@
             })
             .catch(error => {
                 console.log(error);
+                document.getElementById("device-list-message-holder").innerHTML = '<font color="#ff0000">' + error + "</font>";
             });
         }
 
+        /*
+         * Trigger to take a photo.
+         */
         function triggerCamera() {
             let deviceId = getSelectedDeviceId();
             const payload = "Don't care.";
             connect.setResourceValue(deviceId, cameraShutterRes, payload)
             .then(response => {
-                setDeviceMessage("Camera triggered.");
+                document.getElementById("device-message-holder").innerText = "Camera triggered.";
                 console.log("Camera triggered.");
             })
             .catch(error => {
                 console.log(error);
+                document.getElementById("device-message-holder").innerHTML = '<font color="#ff0000">' + error + "</font>";
             });
         }
 
+        /*
+         * Display the given jpeg data. The argument must be jpeg data.
+         */
         function showCapture(data) {
             let currentTime = new Date().toLocaleString();
             let img_holder = document.getElementById("image-holder");
             img_holder.innerHTML = '<p style="border-style: solid; border-width: 1px">' + currentTime + '<br /><img src="data:image/jpeg;base64,' + window.btoa(data) + '"></p>' + img_holder.innerHTML;
-            setDeviceMessage("Obtained camera capture.");
+            document.getElementById("device-message-holder").innerText = "Obtained camera capture.";
             console.log("Camera capture changed.");
         }
     </script>
