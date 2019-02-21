@@ -13,7 +13,7 @@ Web app to view photos took by GR-LYCHEE via Pelion Device Management.
 1. Select your GR-LYCHEE from the connected devices list and click the **ENABLE DEVICE** button.
 1. Click the **CAPTURE** button, then you'll get a photo from your GR-LYCHEE!
 
-Note that you can open only 1 channel per 1 API key. Don't open more than 2 pages by 1 API key.
+**Note: you can open only 1 channel per 1 API key. Don't open more than 2 pages by 1 API key.**
 
 This web UI is tested on
 * Safari on Mac
