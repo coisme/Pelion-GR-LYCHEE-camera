@@ -97,7 +97,7 @@
                     let id = devices.data[i].id;
                     document.getElementById("device-list").innerHTML += 
                         '<input type="radio" name="selected-device" value="' + id + '"' 
-                        + (i == 0 ? " checked" : "" ) +'> ' + id + "\n";
+                        + (i == 0 ? " checked" : "" ) +'> ' + id + "<br />\n";
                     console.log(id);
                 }
                 // Enable the subscribe button
