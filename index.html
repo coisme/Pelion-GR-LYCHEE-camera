@@ -33,30 +33,35 @@
     <div id="apikey-holder">
         API Key: 
         <input id="api_key" type="text" value="" />
-        <button type="button" onClick="getDeviceList()">Connect</button>
+        <button type="button" id="button-get-device-list" onClick="getDeviceList()">Connect</button>
     </div>
 
-    <div id="device-list">
+    <div id="device-list-message-holder" style="margin: 8pt 0pt 8pt 0pt;">
+        <!-- Message here. -->      
+    </div>
+
+    <div id="device-list" >
         <!-- Device list here. -->
     </div>
 
     <div>
-        <div id="device-list-message-holder">
-            <!-- Message here. -->      
-        </div>
-        <button type="button" id="button-subscribe-camera" onClick="subscribeCamera()" disabled>Enable Device</button>
+        <button type="button" id="button-subscribe-camera" onClick="subscribeCamera()" disabled>Select Device</button>
     </div>
 
     <hr />
 
     <div>
+        <p style="font-size: small; color: #888888;">
+                To take a picture, click the CAPTURE button.<br />
+                You can also take a picture by pushing UB0 button on the board.
+        </p>
+        <button type="button" id="button-trigger-camera" onClick="triggerCamera()" disabled>Capture</button>
         <div id="device-message-holder">
             <!-- message here. -->
         </div>
-        <button type="button" id="button-trigger-camera" onClick="triggerCamera()" disabled>Capture</button>
     </div>
 
-    <div id="image-holder">
+    <div id="image-holder" style="margin: 8pt 0px 0px 8pt;">
         <!-- Received Photo Here. -->
     </div>
 
@@ -127,11 +132,13 @@
          * Subscribes the camera resource on the selected device.
          */
         function subscribeCamera() {
+            document.getElementById("device-list-message-holder").innerText = "Enabling the selected device...";
             // Clear existing subscription if exist.
             connect.deleteSubscriptions()
             .then(function() {
                 let deviceId = getSelectedDeviceId();
                 console.log("Subscrive to " + deviceId);
+                // Add subscription for the selected device.
                 connect.addResourceSubscription(deviceId, cameraCaptureRes, data => {
                     showCapture(data);
                 })
@@ -140,7 +147,6 @@
                     // Enable the photo capture button
                     document.getElementById("button-trigger-camera").disabled = false;
                     document.getElementById("device-list-message-holder").innerText = "Device enabled.";
-                    document.getElementById("device-message-holder").innerText = "To get a picture, click the CAPTURE button.";
                 })
                 .catch(error => {
                     console.log(error);
@@ -191,7 +197,7 @@
         function showCapture(data) {
             let currentTime = new Date().toLocaleString();
             let img_holder = document.getElementById("image-holder");
-            img_holder.innerHTML = '<p style="border-style: solid; border-width: 1px">' + currentTime + '<br /><img src="data:image/jpeg;base64,' + window.btoa(data) + '"></p>' + img_holder.innerHTML;
+            img_holder.innerHTML = '<p style="border-style: solid; border-width: 1px">Device: ' + getSelectedDeviceId() + '<br />' + currentTime + '<br /><img src="data:image/jpeg;base64,' + window.btoa(data) + '"></p>' + img_holder.innerHTML;
             document.getElementById("device-message-holder").innerText = "Obtained camera capture.";
             console.log("Camera capture changed.");
         }
