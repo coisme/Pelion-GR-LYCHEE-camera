@@ -163,8 +163,8 @@
                 let deviceId = getSelectedDeviceId();
                 console.log("Subscrive to " + deviceId);
                 // Add subscription for the selected device.
-                connect.addResourceSubscription(deviceId, cameraCaptureRes, data => {
-                    // Called every notification
+                connect.addResourceSubscription(deviceId, cameraCaptureRes, data => {      // Called every notification
+                    document.getElementById("device-message-holder").innerText = "Obtained camera capture.";
                     if(isAutoCaptureMode()) {
                         // get the period in sec
                         let period = document.getElementById("trigger-period").value;
@@ -220,14 +220,27 @@
         /*
          * Display the given jpeg data. The argument must be jpeg data.
          */
-        function showCapture(data) {
-            let photoArray = new Array();
-            let currentTime = new Date().toLocaleString();
-            let img_holder = document.getElementById("image-holder");
-            img_holder.innerHTML = '<p style="border-style: solid; border-width: 1px">Device: ' + getSelectedDeviceId() + '<br />' + currentTime + '<br /><img src="data:image/jpeg;base64,' + window.btoa(data) + '"></p>' + img_holder.innerHTML;
-            document.getElementById("device-message-holder").innerText = "Obtained camera capture.";
-            console.log("Camera capture changed.");
-        }
+        const showCapture = (function() {
+            const NUM_MAX_CAPTURE = 10;                     // Maximum number of photos to be kept.
+            let captures = new Array(NUM_MAX_CAPTURE);
+            return function(data) {
+                let currentTime = new Date().toLocaleString();
+                // Add a new element.
+                captures.unshift('<p style="border-style: solid; border-width: 1px">Device: ' + getSelectedDeviceId() 
+                        + '<br />' + currentTime + '<br /><img src="data:image/jpeg;base64,' + window.btoa(data) + '"></p>');
+                // Remove the last element.
+                captures.pop();
+                // construct HTML
+                let img_holder = document.getElementById("image-holder");
+                img_holder.innerHTML = "";
+                for(let blob of captures) {
+                    if(blob) {
+                        // blob is not undefined.
+                        img_holder.innerHTML += blob;
+                    }
+                }
+            }
+        })();
     </script>
 </body>
 </html>
