@@ -4,7 +4,7 @@ Web app to view photos took by GR-LYCHEE via Pelion Device Management.
 
 ## Prerequisites
 * [GR-LYCHEE](https://os.mbed.com/platforms/Renesas-GR-LYCHEE/) with camera and [this firmware](https://os.mbed.com/users/coisme/code/Pelion-GR-LYCHEE-camera-firmware/)
-* Pelion Device Management API Key ([instruction](https://cloud.mbed.com/docs/v2.1/integrate-web-app/api-keys.html) to generating an API key)
+* Pelion Device Management API Key ([Generating an API key](https://cloud.mbed.com/docs/v2.1/integrate-web-app/api-keys.html))
 
 ## How to use
 
