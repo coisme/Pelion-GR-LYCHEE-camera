@@ -53,21 +53,20 @@
     <div>
         <p style="font-size: small; color: #888888;">
                 To take a picture, click the CAPTURE button.<br />
-                You can also take a picture by pushing UB0 button on the GR-LYCHEE board.<br />
-                To stop auto capture, uncheck the checkbox.
+                You can also take a picture by pushing UB0 button on GR-LYCHEE.
         </p>
         <p style="margin: 8pt 0pt 8pt 0pt;">
-            <input type="checkbox" id="checkbox-auto-capture"> auto capture
+            <input type="checkbox" id="checkbox-auto-capture" onClick="handleAutoCapture()"> auto capture
                 <select id="trigger-period" name="trigger period">
                     <option value="0">continuously</option>
-                    <option value="5" selected>every 5 sec</option>
-                    <option value="10">every 10 sec</option>
-                    <option value="20">every 20 sec</option>
-                    <option value="30">every 30 sec</option>
-                    <option value="60">every 1 min</option>
-                    <option value="300">every 5 min</option>
-                    <option value="600">every 10 min</option>
-                    <option value="3600">every 1 hour</option>
+                    <option value="5" selected>wait 5 sec</option>
+                    <option value="10">wait 10 sec</option>
+                    <option value="20">wait 20 sec</option>
+                    <option value="30">wait 30 sec</option>
+                    <option value="60">wait 1 min</option>
+                    <option value="300">wait 5 min</option>
+                    <option value="600">wait 10 min</option>
+                    <option value="3600">wait 1 hour</option>
                 </select>
         </p>
         <p>
@@ -88,6 +87,9 @@
         const cameraShutterRes = "/3201/0/5853";    // Camera shutter, which triggers taking a photo
 
         let connect;          // ConnectAPI object
+
+        let autoCaptureTimerId;       // Timer ID for auto capture
+        let countDownTimerId;
 
         /*
          * Get the device list associated with the provided API key.
@@ -170,7 +172,11 @@
                         let period = document.getElementById("trigger-period").value;
                         // Call triggerCamera() in the specified second.
                         // Note that setTimeout takes timeout in milli-seconds.
-                        setTimeout("triggerCamera()", period*1000);
+                        autoCaptureTimerId = setTimeout("triggerCamera()", period*1000);
+                        // Show auto capture message.
+                        document.getElementById("device-message-holder").innerHTML = '<p>Auto capture mode. Waiting <span id="remain-time">' + period + '</span> seconds ...</p>';
+                        // Start count down.
+                        updateCount(period);
                     } else {
                         // Enable the CAPTURE button
                         document.getElementById("button-trigger-camera").disabled = false;
@@ -215,6 +221,36 @@
                 // Enable the CAPTURE button
                 document.getElementById("button-trigger-camera").disabled = false;
             });
+        }
+
+        /*
+         * Called when user click the auto capture checkbox.
+         */
+        function handleAutoCapture() {
+            if(!isAutoCaptureMode()) {      // Auto capture mode is disabled.
+                console.log("Auto capture dismissed.");
+                if(autoCaptureTimerId) {    // Timer has fired.
+                    // Clear timeout
+                    clearTimeout(autoCaptureTimerId);
+                    autoCaptureTimerId = null;
+                    // Enable CAPTURE button again.
+                    document.getElementById("button-trigger-camera").disabled = false;
+                    // Show message.
+                    document.getElementById("device-message-holder").innerText = "Auto capture finished.";
+                }
+                if(countDownTimerId) {      // Count down timer has fired.
+                    // Clear timeout.
+                    clearTimeout(countDownTimerId);
+                    countDownTimerId = null;
+                }
+            }
+        }
+
+        function updateCount(currentCount) {
+            if(currentCount >= 0) {
+                document.getElementById("remain-time").innerText = currentCount;
+                countDownTimerId = setTimeout(updateCount, 1000, currentCount-1);
+            }
         }
 
         /*
