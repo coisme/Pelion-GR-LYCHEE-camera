@@ -174,7 +174,7 @@
                         // Note that setTimeout takes timeout in milli-seconds.
                         autoCaptureTimerId = setTimeout("triggerCamera()", period*1000);
                         // Show auto capture message.
-                        document.getElementById("device-message-holder").innerHTML = '<p>Auto capture mode. Waiting <span id="remain-time">' + period + '</span> seconds ...</p>';
+                        document.getElementById("device-message-holder").innerHTML = 'Auto capture mode. Waiting <span id="remain-time">' + period + '</span> seconds ...';
                         // Start count down.
                         updateCount(period);
                     } else {
