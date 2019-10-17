@@ -101,7 +101,7 @@
                 return;
             } else {
                 window.config.apiKey = key;
-                connect = new MbedCloudSDK.ConnectApi(window.config);
+                connect = new MbedCloudSDK.ConnectApi.default(window.config);
                 console.log("Connect API object created.");
             }
             listDevices();
