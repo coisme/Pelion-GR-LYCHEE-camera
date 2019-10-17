@@ -15,6 +15,7 @@ The master branch is always under development and must be used with the latest f
 | Webapp | [Firmware](https://os.mbed.com/users/coisme/code/Pelion-GR-LYCHEE-camera-firmware/) |
 | :--- | :--- |
 | master | tip |
+|v1.1|v1.3|
 |v1.0.0|v1.0.0|
 
 
